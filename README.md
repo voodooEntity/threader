@@ -8,6 +8,14 @@ just execute the Command a defined number of times (-runs) or to pass input give
 by STDIN split by a delimiter and provide each result part as \\$INPUTSTR param to
 your -run command. 
 
+To install simply build the main.go as with "go build -o threader" or use the 
+shipped binary (64bit debian based). Copy the threader binary to /usr/bin
+```sh
+$ sudo cp threader /usr/bin/threader 
+```
+Threader is shipped with /bin/bash as only dependency. 
+
+
 ### Args: 
 * -run \"yourcommand\" 
   * Can include \\$INPUTSTR \\$INPUTID \\$THREADID

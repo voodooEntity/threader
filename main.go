@@ -319,7 +319,7 @@ func printHelpText() {
 		"  your command. For examples check https://github.com/voodooEntity/threader readme.\n\n" +
 		"  Args: \n" +
 		"    -run \"yourcommand\"            | Can include \\$INPUTSTR \\$INPUTID \\$THREADID\n" +
-		"    -runs INT               | Amount of run executions to be done if no input is given\n" +
+		"    -runs INT                     | Amount of run executions to be done if no input is given\n" +
 		"    -delimiter \"delimiterstring\"  | String to split stdin given input up to single command inputstr\n" +
 		"                                    default delimiter=\"\\n\"\n" +
 		"    -verbose on                   | Sets threaders core output to verbose mode for debugging purposes\n" +
