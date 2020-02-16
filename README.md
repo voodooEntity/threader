@@ -58,7 +58,7 @@ $ echo "/etc,/home,/srv" | threader -run "stat \$INPUTSTR" -delimiter ","
 ```
 ##### Running a command with input from a cli command
  ```sh
-$ ls -1 / | ./threader -run "stat /\$INPUTSTR"
+$ ls -1 / | threader -run "stat /\$INPUTSTR"
 ```
 
 
