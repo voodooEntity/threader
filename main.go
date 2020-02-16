@@ -264,9 +264,11 @@ func verboseOut(out string) {
 
 func parseArgs() {
 	// first we check for the help flag
-	if os.Args[1] == "help" {
-		printHelpText()
-		os.Exit(1)
+	if 1 < len(os.Args) {
+		if ok := os.Args[1]; ok == "help" {
+			printHelpText()
+			os.Exit(1)
+		}
 	}
 
 	// delimiter to be used for custom generator input
