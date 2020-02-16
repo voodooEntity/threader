@@ -32,9 +32,9 @@ The following vars can be used in your execution command.
 * \\$INPUTSTR    
   * This variable will include a single input part provided by the result of splitting the STDIN input by -delimiter string.
 * \\$INPUTID     
-  * This variable will include a the id of the given INPUTSTR. This variable is only unique for each thread, not in total.
+  * This variable will include a the id of the given \\$INPUTSTR. This variable is only unique for each thread, not in total.
 * \\$THREADID    
-  * This variable will include a the id of the thread executing the current command. It can be used to create unique identifiers combined with \INPUTID
+  * This variable will include a the id of the thread executing the current command. It can be used to create unique identifiers combined with \\$INPUTID
 
 
 
