@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"errors"
 	"flag"
-	"fmt"
 	"io"
 	"log"
 	"math"
@@ -18,13 +17,14 @@ import (
 type Args struct {
 	Delimiter    string
 	Input        string
+	Verbose      string
 	ThreadAmount int
 	Run          string
 	Runs         int
 }
 
 var args Args
-var logger = log.New(os.Stdout, "", 0)
+var loggerOut = log.New(os.Stdout, "", 0)
 
 func init() {
 	// presets
@@ -37,7 +37,7 @@ func main() {
 	// one simple check
 	cpuAmount := runtime.NumCPU()
 	if args.ThreadAmount > cpuAmount {
-		fmt.Println("You set '", args.ThreadAmount, "' threads but only have '", cpuAmount, "' cores. It`s your choice...")
+		verboseOut("You set '" + strconv.Itoa(args.ThreadAmount) + "' threads but only have '" + strconv.Itoa(cpuAmount) + "' cores. It`s your choice...")
 	}
 
 	// check what type of input we get by following priority
@@ -114,10 +114,7 @@ func runSmartMinions(input map[int]string) {
 		for x := start; x < stop; x++ {
 			if val, ok := input[x]; ok {
 				subInput[x-start] = val
-			} else {
-				logger.Println("Could not find ", x, " in ", input)
 			}
-
 		}
 
 		// set the next start to the current stop
@@ -143,20 +140,20 @@ func runSmartMinions(input map[int]string) {
 			break
 		}
 	}
-	//fmt.Println("All work is done. Exiting")
+	verboseOut("All work is done. Exiting")
 
 }
 
 func createSmartMinion(id int, input []string, intercom chan string) {
-	//fmt.Println("Minion nr", id, "spawned. ")
+	verboseOut("Minion nr " + strconv.Itoa(id) + " spawned. ")
 	for iid, singleIn := range input {
 		// provide some vars for the command
 		// run the command
 		execString := prepareExecString(singleIn, id, iid)
 		ret, _ := custExec(execString)
-		logger.Println(ret)
+		loggerOut.Println(ret)
 	}
-	//fmt.Println("Minion nr", id, "finished its job.")
+	verboseOut("Minion nr " + strconv.Itoa(id) + " finished its job.")
 	intercom <- "done"
 }
 
@@ -172,7 +169,7 @@ func runHeadlessMinions() {
 
 	// check some things
 	if args.ThreadAmount > args.Runs {
-		fmt.Println("You did set '", args.ThreadAmount, "' but set only '", args.Runs, "' runs. Resetting the Threadamount")
+		verboseOut("You did set '" + strconv.Itoa(args.ThreadAmount) + "' but set only '" + strconv.Itoa(args.Runs) + "' runs. Resetting the Threadamount")
 		args.ThreadAmount = args.Runs
 	}
 
@@ -212,19 +209,19 @@ func runHeadlessMinions() {
 			break
 		}
 	}
-	//fmt.Println("All work is done. Exiting")
+	verboseOut("All work is done. Exiting")
 }
 
 func createStupidMinion(id int, runs int, intercom chan string) {
-	//fmt.Println("Minion nr", id, "spawned. ")
+	verboseOut("Minion nr " + strconv.Itoa(id) + " spawned. ")
 	for i := 0; i < runs; i++ {
 		prepared := prepareExecString("", id, i)
 		ret, _ := custExec(prepared)
 		if "" != ret {
-			logger.Println(ret)
+			loggerOut.Println(ret)
 		}
 	}
-	//fmt.Println("Minion nr", id, "finished its job.")
+	verboseOut("Minion nr " + strconv.Itoa(id) + " finished its job.")
 	intercom <- "done"
 }
 
@@ -237,7 +234,7 @@ func splitInput() map[int]string {
 
 	// check if the input amount is less than the given thread amount
 	if args.ThreadAmount > len(inputSlice) {
-		fmt.Println("You set to execute more threads than inputs provided. Resetting threads amount to input amount '", len(inputSlice), "'.")
+		verboseOut("You set to execute more threads than inputs provided. Resetting threads amount to input amount '" + strconv.Itoa(len(inputSlice)) + "'.")
 		args.ThreadAmount = len(inputSlice)
 	}
 
@@ -259,6 +256,12 @@ func custExec(cmd string) (string, error) {
 	return strings.TrimRight(string(output), "\n"), nil
 }
 
+func verboseOut(out string) {
+	if "on" == args.Verbose {
+		loggerOut.Println(out)
+	}
+}
+
 func parseArgs() {
 	// delimiter to be used for custom generator input
 	var delimiter string
@@ -266,15 +269,19 @@ func parseArgs() {
 
 	// thread amount to be used
 	var threadAmount int
-	flag.IntVar(&threadAmount, "threads", 1, "Amount of threads to be used")
+	flag.IntVar(&threadAmount, "threads", -1, "Amount of threads to be used")
 
 	// amount of runs in case you dont provide input
 	var runs int
 	flag.IntVar(&runs, "runs", -1, "Amount of threads to be used")
 
-	// input by string
+	// run command by string
 	var run string
 	flag.StringVar(&run, "run", "", "Job to be executed")
+
+	// input by string
+	var verbose string
+	flag.StringVar(&verbose, "verbose", "", "Job to be executed")
 
 	// parse the flags
 	flag.Parse()
@@ -282,9 +289,16 @@ func parseArgs() {
 	args = Args{
 		Delimiter:    delimiter,
 		ThreadAmount: threadAmount,
+		Verbose:      verbose,
 		Run:          run,
 		Input:        "",
 		Runs:         runs,
+	}
+
+	// check for dynamic thread amount
+	if -1 == args.ThreadAmount {
+		args.ThreadAmount = runtime.NumCPU()
+		verboseOut("Setting output dynamic to " + string(args.ThreadAmount))
 	}
 
 }
