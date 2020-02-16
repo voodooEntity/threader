@@ -263,6 +263,12 @@ func verboseOut(out string) {
 }
 
 func parseArgs() {
+	// first we check for the help flag
+	if os.Args[1] == "help" {
+		printHelpText()
+		os.Exit(1)
+	}
+
 	// delimiter to be used for custom generator input
 	var delimiter string
 	flag.StringVar(&delimiter, "delimiter", "\n", "Cutoff color value")
@@ -301,4 +307,29 @@ func parseArgs() {
 		verboseOut("Setting output dynamic to " + string(args.ThreadAmount))
 	}
 
+}
+
+func printHelpText() {
+	helpText := "Threader Help:\n" +
+		"> Threader executes a given command (-run) in x parallel threads. It can be used to\n" +
+		"  just execute the Command a defined number of times (-runs) or to pass input given\n" +
+		"  by stdIn split by a delimiter and provide each result part as \\$INPUTSTR param to\n" +
+		"  your command. For examples check https://github.com/voodooEntity/threader readme.\n\n" +
+		"  Args: \n" +
+		"    -run \"yourcommand\"            | Can include \\$INPUTSTR \\$INPUTID \\$THREADID\n" +
+		"    -runs INT               | Amount of run executions to be done if no input is given\n" +
+		"    -delimiter \"delimiterstring\"  | String to split stdin given input up to single command inputstr\n" +
+		"                                    default delimiter=\"\\n\"\n" +
+		"    -verbose on                   | Sets threaders core output to verbose mode for debugging purposes\n" +
+		"    -threads INT                  | Define a number of threads to be used for parallel execution\n" +
+		"                                  | default threads=amount of cpus\n" +
+		"  Vars: \n" +
+		"    The following vars can be used in your execution command. \n" +
+		"    - \\$INPUTSTR    This variable will include a single input part provided by the result of \n" +
+		"                    splitting the stdIn by -delimiter.\n" +
+		"    - \\$INPUTID     This variable will include a the id of the given INPUTSTR. This variable \n" +
+		"                    is only unique for each thread, not in total.\n" +
+		"    - \\$THREADID    This variable will include a the id of the thread executing the current \n" +
+		"                    command. It can be used to create unique identifiers combined with \\INPUTID\n"
+	loggerOut.Println(helpText)
 }
