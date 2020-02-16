@@ -69,7 +69,10 @@ $ echo "/etc,/home,/srv" | threader -run "stat \$INPUTSTR" -delimiter ","
  ```sh
 $ ls -1 / | threader -run "stat /\$INPUTSTR"
 ```
-
+##### Get the total size of each directory in / (using function output, dynamic amount of threads, default delimiter \n )
+ ```sh
+$ ls -D1 / | threader -run "du -h /\$INPUTSTR | tail -1"
+```
 
 
 
