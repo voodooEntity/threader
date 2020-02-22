@@ -23,6 +23,7 @@ type Args struct {
 	Runs         int
 }
 
+var shell string
 var args Args
 var loggerOut = log.New(os.Stdout, "", 0)
 
@@ -31,6 +32,15 @@ func init() {
 }
 
 func main() {
+	// detect shell
+	executer, exists := os.LookupEnv("SHELL")
+	if !exists {
+		// Print the value of the environment variable
+		loggerOut.Println("No SHELL env given, exiting")
+		os.Exit(1)
+	}
+	shell = executer
+
 	// first we gonne parse the args
 	parseArgs()
 
@@ -249,7 +259,7 @@ func splitInput() map[int]string {
 }
 
 func custExec(cmd string) (string, error) {
-	output, err := exec.Command("/bin/bash", "-c", cmd).Output()
+	output, err := exec.Command(shell, "-c", cmd).Output()
 	if nil != err {
 		return "", errors.New("Error executin command")
 	}
