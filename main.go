@@ -149,18 +149,11 @@ func createSmartMinion(id int, input []string, intercom chan string) {
 	for iid, singleIn := range input {
 		// provide some vars for the command
 		// run the command
-		execString := prepareExecString(singleIn, id, iid)
-		ret, _ := custExec(execString)
+		ret, _ := custExec(singleIn, id, iid)
 		loggerOut.Println(ret)
 	}
 	verboseOut("Minion nr " + strconv.Itoa(id) + " finished its job.")
 	intercom <- "done"
-}
-
-func prepareExecString(input string, threadID int, inputID int) string {
-	args.Run = strings.Replace(args.Run, "\"", "\\\"", -1)
-	commandString := "INPUTSTR=\"" + input + "\";THREADID=\"" + strconv.Itoa(threadID) + "\";INPUTID=\"" + strconv.Itoa(inputID) + "\";" + args.Run + ";"
-	return commandString
 }
 
 func runHeadlessMinions() {
@@ -215,8 +208,7 @@ func runHeadlessMinions() {
 func createStupidMinion(id int, runs int, intercom chan string) {
 	verboseOut("Minion nr " + strconv.Itoa(id) + " spawned. ")
 	for i := 0; i < runs; i++ {
-		prepared := prepareExecString("", id, i)
-		ret, _ := custExec(prepared)
+		ret, _ := custExec("", id, i)
 		if "" != ret {
 			loggerOut.Println(ret)
 		}
@@ -248,10 +240,17 @@ func splitInput() map[int]string {
 	return data
 }
 
-func custExec(cmd string) (string, error) {
-	output, err := exec.Command("/bin/bash", "-c", cmd).Output()
+func custExec(input string, threadID int, inputID int) (string, error) {
+	cmd := exec.Command(os.Getenv("SHELL"), "-c", "eval $COMMAND")
+	cmd.Env = append(os.Environ(),
+		"COMMAND="+args.Run,
+		"INPUTSTR="+input,
+		"THREADID="+strconv.Itoa(threadID),
+		"INPUTID="+strconv.Itoa(inputID),
+	)
+	output, err := cmd.Output()
 	if nil != err {
-		return "", errors.New("Error executin command")
+		return "", errors.New("Error executing command")
 	}
 	return strings.TrimRight(string(output), "\n"), nil
 }
