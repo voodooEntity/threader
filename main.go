@@ -168,8 +168,13 @@ func createSmartMinion(id int, input []string, intercom chan string) {
 }
 
 func prepareExecString(input string, threadID int, inputID int) string {
-	args.Run = strings.Replace(args.Run, "\"", "\\\"", -1)
-	commandString := "INPUTSTR=\"" + input + "\";THREADID=\"" + strconv.Itoa(threadID) + "\";INPUTID=\"" + strconv.Itoa(inputID) + "\";" + args.Run + ";"
+	// set the vars as env vars appended with the threadid
+	threadIDstr := strconv.Itoa(threadID)
+	os.Setenv("TIS"+threadIDstr, input)
+	os.Setenv("TID"+threadIDstr, strconv.Itoa(inputID))
+	os.Setenv("TTID"+threadIDstr, threadIDstr)
+	// build the execution string buy normalising the varnames to standard varnames for erasier command handling
+	commandString := "INPUTSTR=$TIS" + threadIDstr + ";THREADID=$TTID" + threadIDstr + ";INPUTID=$TID" + threadIDstr + ";" + args.Run + ";"
 	return commandString
 }
 
