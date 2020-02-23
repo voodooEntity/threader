@@ -1,28 +1,21 @@
+## Threader 
 
+### Info: 
+Threader executes a given command "-run" in x parallel threads. It can be used to just execute the command a defined number of times "-runs" or to pass input given by STDIN split, by a delimiter and provide each result part as \\$INPUTSTR param to
+your "-run" command. 
 
-## Threader
+For more information of the current version and changes please check the CHANGELOG.md
 
-### Info:
-Threader executes a given command (-run) in x parallel threads. It can be used to
-just execute the Command a defined number of times (-runs) or to pass input given
-by STDIN split by a delimiter and provide each result part as \\$INPUTSTR param to
-your -run command. 
+### Install: 
+##### Use the release shipped binaries 
+You can simply download the latest release binaries fitting your os/arch and copy the executable into your PATH to make it executeble. 
 
-Threader is shipped with /bin/bash as only dependency. 
-
-### Install.
-#### All
+##### Build it yourself 
+The current mikefile supports systems that include /usr/bin in their PATH. If your system doesn't include that you either add it or compile it manually with "go build -o threader" and copy it into your supported PATH. 
 ```sh
 $ git clone https://github.com/voodooEntity/threader
 $ cd threader 
-```
-#### If you want to build it yourself with go installed
-```sh
-$ make && make build && make install 
-```
-#### If you want to use the shipped binary simply download it and execute (currently only debian64bit build)
-```sh
-$ sudo cp bin/deb64/threader /usr/bin/threader 
+$ make && make build && make install
 ```
 
 ### Args: 
@@ -74,6 +67,23 @@ $ ls -1 / | threader -run "stat /\$INPUTSTR"
 $ ls -D1 / | threader -run "du -h /\$INPUTSTR | tail -1"
 ```
 
+### FAQ 
+
+##### Why don't you  support Windows in your shipped binaries?
+The nature of the tool is to build dynamic bash execution strings to execute the command you are threading. Windows CMD works different than the POSIX systems of debian etc. To enable threader for windows i would have to add a lot of special cases for windows. I might do this in future if the feature gets requested, but right now im sticking to linux/mac.
+
+##### Why did you build threader?
+I just thought there could be a tool with just simplistic input doing the job, and since golang is very good at simple and stable multithreading i created it. 
+
+##### Why is my os/arch not included in the binaries
+Due to the amount of possibilities of executions with this tool its hard to create tests that would cover everything possible or even a big part of it. So for the moment i build binaries im able to test myself. If anyone would suggest a specific os/arch set he/she would like to see in the binaries im absolutly willed to add it, and i would love to get response about this specific binary working .)
+
+##### What are the future plans of threader?
+I have no speficic future plans for the tool. The base funcionality is given and i gonne focus on making sure this tool always stays stable and working for a majority of os/arch's. Im still open to suggestions on how to improve the tool, but i can't promise anything .) just feel free to comment.
 
 
 
+#### Contributors
+Gonne list some people here that helped out with some rubberducking/ideas etc. Later this will include PR creators too .)
+* f0o
+* luxer
