@@ -50,10 +50,7 @@ func main() {
 		verboseOut("You set '" + strconv.Itoa(args.ThreadAmount) + "' threads but only have '" + strconv.Itoa(cpuAmount) + "' cores. It`s your choice...")
 	}
 
-	// check what type of input we get by following priority
-	// 1. a input-command string to be executed, the return
-	//    used as index
-	// 2. arg -input as string input
+	// prepare the input map
 	var input map[int]string
 	// is there a command given that provides input?
 	if args.Runs != -1 {
