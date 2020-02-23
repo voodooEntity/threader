@@ -173,8 +173,11 @@ func prepareExecString(input string, threadID int, inputID int) string {
 	os.Setenv("TIS"+threadIDstr, input)
 	os.Setenv("TID"+threadIDstr, strconv.Itoa(inputID))
 	os.Setenv("TTID"+threadIDstr, threadIDstr)
+
 	// build the execution string buy normalising the varnames to standard varnames for erasier command handling
 	commandString := "INPUTSTR=$TIS" + threadIDstr + ";THREADID=$TTID" + threadIDstr + ";INPUTID=$TID" + threadIDstr + ";" + args.Run + ";"
+	verboseOut(commandString)
+
 	return commandString
 }
 
