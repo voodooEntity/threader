@@ -1,5 +1,5 @@
 # Changelog
-## Release v1.1 `04.04.2020`
+## Release v1.1 `04.03.2020`
 * Moving input transport from writing as inline as string definition to 
 transporting it in an environment variable. This reduces the chance of 
 having escpaing problems/complexities and making this tool more stable. 
